@@ -1,16 +1,14 @@
-# Install IIS
-Write-Host "Installing IIS..."
-Install-WindowsFeature -Name Web-Server, Web-Asp-Net45 -IncludeManagementTools
+# Install .NET 6 Runtime
+$dotnetUrl = "https://dot.net/v1/dotnet-install.ps1"
+$dotnetInstaller = "$env:TEMP\dotnet-install.ps1"
 
-# Download .NET 6 installer
-$dotnetInstallerPath = "$env:TEMP\dotnet-installer.exe"
-$dotnetInstallerUrl = "https://dot.net/v1/dotnet-install.ps1"
-Invoke-WebRequest -Uri $dotnetInstallerUrl -OutFile $dotnetInstallerPath
+Invoke-WebRequest -Uri $dotnetUrl -OutFile $dotnetInstaller
+& $dotnetInstaller -Channel LTS -Runtime dotnet -InstallDir "$env:ProgramFiles\dotnet" -NoPath
 
-# Install .NET 6 runtime
-Write-Host "Installing .NET 6..."
-Start-Process -Wait -FilePath "powershell.exe" -ArgumentList "-ExecutionPolicy Bypass -File `"$dotnetInstallerPath`" -Channel LTS -InstallDir `"$env:ProgramFiles\dotnet`""
-
-# Add .NET 6 to the PATH environment variable
-$dotnetPath = Join-Path $env:ProgramFiles "dotnet"
-[Environment]::SetEnvironmentVariable("PATH", $env:PATH + ";$dotnetPath", "Machine")
+# Optional: Install IIS Server (if not already installed)
+$features = Get-WindowsFeature | Where-Object {$_.Name -eq "Web-Server" -and $_.Installed -eq $false}
+if ($features.Count -gt 0) {
+    Write-Host "Installing IIS Server..."
+    Install-WindowsFeature -Name "Web-Server" -IncludeManagementTools
+    Write-Host "IIS Server installed successfully."
+}
