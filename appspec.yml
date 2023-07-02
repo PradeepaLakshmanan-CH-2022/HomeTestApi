@@ -1,0 +1,12 @@
+version: 0.0
+os: windows
+files:
+  - source: \HomeApi
+    destination: C:\WebApi
+hooks:
+  BeforeInstall:
+    - location: \install-prerequisites.ps1
+      timeout: 900
+  ApplicationStart:
+    - location: \start-webapi.ps1
+      timeout: 900
