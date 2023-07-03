@@ -1,5 +1,7 @@
-# Download .NET 6 SDK
-Invoke-WebRequest -Uri "https://dotnet.microsoft.com/download/dotnet/6.0/runtime?initial-os=windows" -OutFile "$env:TEMP\dotnet-sdk.exe"
+# Download and install .NET
+Invoke-WebRequest -Uri "https://dotnet.microsoft.com/download/dotnet/thank-you/runtime-6.0.0-windows-x64-installer" -OutFile "$env:TEMP\dotnet-runtime.exe"
+Start-Process -Wait -FilePath "$env:TEMP\dotnet-runtime.exe" -ArgumentList '/install', '/quiet'
 
-# Install .NET 6 SDK
-Start-Process -Wait -FilePath "$env:TEMP\dotnet-sdk.exe" -ArgumentList '/install', '/quiet'
+# Install IIS
+Add-WindowsFeature Web-Server, Web-Mgmt-Tools -IncludeManagementTools
+Start-Service -Name W3SVC
