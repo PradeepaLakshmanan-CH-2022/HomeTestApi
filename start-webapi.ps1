@@ -1,5 +1,15 @@
-# Change directory to the API application path
+# Change to the application directory
 Set-Location -Path "C:\HomeApplication"
 
-# Start the API using the appropriate command
-Start-Process -FilePath "dotnet" -ArgumentList "HomeApi.dll" -NoNewWindow -PassThru
+# Stop IIS website
+Stop-WebSite -Name "Default Web Site"
+
+# Configure IIS bindings
+$webApiSiteName = "MyWebApi"
+$webApiPhysicalPath = "C:\HomeApplication"
+
+# Create a new IIS website for the Web API
+New-WebSite -Name $webApiSiteName -PhysicalPath $webApiPhysicalPath -Port 80 -HostHeader "mywebapi.com"
+
+# Start the Web API website
+Start-WebSite -Name $webApiSiteName

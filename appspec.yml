@@ -1,12 +1,18 @@
 version: 0.0
 os: windows
 files:
-  - source: HomeApi
+  - source: /
     destination: C:\HomeApplication
+
 hooks:
   BeforeInstall:
-    - location: \install-prerequisites.ps1
-      timeout: 900
+    - location: \install-dotnet6.ps1
+      runas: Administrator
+
+  AfterInstall:
+    - location: \enable-iis.ps1
+      runas: Administrator
+
   ApplicationStart:
     - location: \start-webapi.ps1
-      timeout: 900
+      runas: Administrator
